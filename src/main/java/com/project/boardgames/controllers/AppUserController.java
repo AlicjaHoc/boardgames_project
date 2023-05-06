@@ -25,19 +25,30 @@ public class AppUserController {
 //        return appUserServiceImpl.getAllUsers();
 //    }
 
-//    @PostMapping("/register")
-//    public ResponseEntity<RequestResponse<AppUser>> registerNewUser(@Valid @RequestBody AppUser newUser, BindingResult bindingResult) {
-//        AppUser createdUser = appUserService.registerUser(newUser, bindingResult);
-//        RequestResponse<AppUser> response = new RequestResponse<AppUser>(true, createdUser, "User was successfully registered");
-//        return ResponseEntity.ok(response);
-//    }
-
     @PostMapping("/register")
-    public ResponseEntity dupa()
-    {
-        System.out.println("dupa");
-        return ResponseEntity.ok("hello");
+    public ResponseEntity<RequestResponse<AppUser>> registerNewUser(@Valid @RequestBody AppUser newUser, BindingResult bindingResult) {
+        // Sanitize input data
+        String sanitizedFirstName = sanitizeInput(newUser.getFirstName());
+        String sanitizedLastName = sanitizeInput(newUser.getLastName());
+        String sanitizedEmail = sanitizeInput(newUser.getEmail());
+
+        // Update user object with sanitized data
+        newUser.setFirstName(sanitizedFirstName);
+        newUser.setLastName(sanitizedLastName);
+        newUser.setEmail(sanitizedEmail);
+
+        // Register user
+        AppUser createdUser = appUserService.registerUser(newUser, bindingResult);
+        RequestResponse<AppUser> response = new RequestResponse<AppUser>(true, createdUser, "User was successfully registered");
+        return ResponseEntity.ok(response);
     }
+
+    private String sanitizeInput(String input) {
+        // Replace any characters that are not alphanumeric or space with an empty string
+        return input.replaceAll("[^a-zA-Z0-9 ]", "");
+    }
+
+
 
 //    @DeleteMapping("/deleteAccount")
 //    public ResponseEntity<RequestResponse<String>> deleteUserAccount()

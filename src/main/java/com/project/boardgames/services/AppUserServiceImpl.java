@@ -5,6 +5,7 @@ import com.project.boardgames.utilities.RequestResponse;
 import com.project.boardgames.ErrorUtilities.AppException;
 import com.project.boardgames.entities.AppUser;
 import com.project.boardgames.repositories.AppUserRepository;
+import com.project.boardgames.utilities.authentication.PasswordHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,10 +21,10 @@ import java.util.Optional;
 
 @Service
 public class AppUserServiceImpl implements AppUserService {
-    private final PasswordEncoder passwordEncoder;
+    private final PasswordHandler passwordEncoder;
     private final AppUserRepository userRepository;
 
-    public AppUserServiceImpl(AppUserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AppUserServiceImpl(AppUserRepository userRepository, PasswordHandler passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -82,12 +83,11 @@ public class AppUserServiceImpl implements AppUserService {
 
         String email = newUser.getEmail();
 
-        Role userRole = newUser.getRole() != null ? newUser.getRole() : Role.USER;
-        newUser.setRole(userRole);
+        newUser.setRole(Role.USER);
 
-        if (userRepository.findByEmail(email).isEmpty()) {
-            throw new AppException("User under this email already exists.", 500, "fail", true);
-        }
+        // Check if user already exists with this email address
+        if (userRepository.findByEmail(email).isPresent())
+            throw new AppException("User under this email already exists.", HttpStatus.BAD_REQUEST.value(), "fail", true);
 
         LocalDateTime createdAt = LocalDateTime.now();
         newUser.setCreatedAt(createdAt);
@@ -103,8 +103,7 @@ public class AppUserServiceImpl implements AppUserService {
             throw new AppException("Password must be at least 8 characters long and contain at least one number", HttpStatus.BAD_REQUEST.value(), "fail", true);
         }
 
-        // Use BCryptPasswordEncoder to hash the password
-        newUser.setPassword(passwordEncoder.encode(password));
+        newUser.setPassword(passwordEncoder.encrypt(newUser.getPassword()));
         newUser.setConfirmPassword("");
         return userRepository.save(newUser);
     }

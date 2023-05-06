@@ -34,12 +34,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .maxSessionsPreventsLogin(true)
                 .expiredUrl("/login?expired");
     }
-
-    @Autowired
-    PasswordEncoder passwordEncoder;
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder);
-    }
-
 }
