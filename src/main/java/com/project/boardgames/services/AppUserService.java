@@ -2,9 +2,12 @@ package com.project.boardgames.services;
 
 import com.project.boardgames.entities.AppUser;
 import com.project.boardgames.utilities.RequestResponse;
+import com.project.boardgames.utilities.authentication.UserPassport;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
@@ -25,9 +28,9 @@ public interface AppUserService {
 
     RequestResponse<List<AppUser>> getAllUsers();
 
-    RequestResponse<AppUser>login(String username, String password);
+    RequestResponse<UserPassport> login(HttpServletResponse response, String username, String password);
 
-    RequestResponse<AppUser> logout();
+    RequestResponse<String> logout(HttpServletRequest request);
 
     AppUser registerUser(@Valid @RequestBody AppUser newUser, BindingResult bindingResult);
 }

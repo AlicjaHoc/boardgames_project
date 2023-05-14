@@ -1,7 +1,11 @@
-package com.project.boardgames.utilities.authentication;
+package com.project.boardgames.services;
+import com.project.boardgames.entities.AppUser;
+import com.project.boardgames.entities.JwtToken;
+import com.project.boardgames.repositories.JwtTokenRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import java.util.Date;
@@ -9,14 +13,20 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-@Service
-public class JwtUtil {
-
+public class JwtTokenService {
+    @Autowired
+    JwtTokenRepository jwtTokenRepository;
     private static final String SECRET_KEY = "secret";
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(AppUser user) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userDetails.getUsername());
+        claims.put("userId", user.getId());
+        JwtToken token = new JwtToken();
+        token.setValid(true);
+        token.setToken(createToken(claims, user.getEmail()));
+        jwtTokenRepository.save(token);
+        System.out.println('1');
+        return token.getToken();
     }
 
     private String createToken(Map<String, Object> claims, String subject) {

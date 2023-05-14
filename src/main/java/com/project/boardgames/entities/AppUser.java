@@ -1,19 +1,12 @@
 package com.project.boardgames.entities;
-
 import javax.persistence.*;
-
-
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
-
 @Entity
 @Table(name = "app_users")
-public class AppUser {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
-    private Long id;
+@DiscriminatorColumn(name = "entity_type")
+@DiscriminatorValue("app_user")
+public class AppUser extends GenericEntity {
 
     @Column(name = "first_name")
     private String firstName;
@@ -21,11 +14,13 @@ public class AppUser {
     @Column(name = "last_name")
     private String lastName;
 
+    @Email
+    @Column
     private String email;
+
     @NotBlank(message = "Password is required")
     @Size(min = 8, message = "Password must be at least 8 characters long")
     private String password;
-
 
     @Transient
     private String confirmPassword;
@@ -33,19 +28,18 @@ public class AppUser {
     @Column(name = "password_updated_at")
     private LocalDateTime passwordUpdatedAt;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
-    public AppUser() {
-    }
 
-    public Long getId() {
-        return id;
-    }
+    @Column(name = "valid", columnDefinition = "boolean default true")
+    private Boolean valid;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @ManyToOne
+    @JoinColumn(name = "address_id")
+    private Address address;
+
+    // Constructors, getters, setters, and other methods
 
     public String getFirstName() {
         return firstName;
@@ -94,13 +88,6 @@ public class AppUser {
         this.passwordUpdatedAt = passwordUpdatedAt;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
 
     public Role getRole() {
         return role;
@@ -118,12 +105,13 @@ public class AppUser {
         this.address = address;
     }
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    public Boolean getValid() {
+        return valid;
+    }
 
-    @ManyToOne
-    @JoinColumn(name = "address_id")
-    private Address address;
+    public void setValid(Boolean valid) {
+        this.valid = valid;
+    }
 
-    // constructors, getters, setters, and toString() method
+
 }
