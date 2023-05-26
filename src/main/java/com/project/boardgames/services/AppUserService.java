@@ -1,5 +1,6 @@
 package com.project.boardgames.services;
 
+import com.project.boardgames.entities.Address;
 import com.project.boardgames.entities.AppUser;
 import com.project.boardgames.utilities.RequestResponse;
 import com.project.boardgames.utilities.authentication.UserPassport;
@@ -30,7 +31,7 @@ public interface AppUserService {
 
     RequestResponse<UserPassport> login(HttpServletResponse response, String username, String password);
 
-    RequestResponse<String> logout(HttpServletRequest request);
+    RequestResponse<String> logout(HttpServletRequest request, HttpServletResponse response);
 
-    AppUser registerUser(@Valid @RequestBody AppUser newUser, BindingResult bindingResult);
+    AppUser registerUser(AppUser newUser, Address address);
 }

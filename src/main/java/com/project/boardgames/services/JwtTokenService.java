@@ -24,6 +24,7 @@ public class JwtTokenService {
         JwtToken token = new JwtToken();
         token.setValid(true);
         token.setToken(createToken(claims, user.getEmail()));
+        token.setUser_id(user.getId());
         jwtTokenRepository.save(token);
         System.out.println('1');
         return token.getToken();
@@ -41,9 +42,9 @@ public class JwtTokenService {
                 .compact();
     }
 
-    public boolean validateToken(String token, UserDetails userDetails) {
+    public boolean validateToken(String token, AppUser user) {
         final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        return (username.equals(user.getEmail()) && !isTokenExpired(token));
     }
 
     private boolean isTokenExpired(String token) {

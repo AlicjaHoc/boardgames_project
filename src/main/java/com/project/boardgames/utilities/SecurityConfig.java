@@ -22,8 +22,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                    .antMatchers("/resources/**", "/loginUser", "/register").permitAll()
-                    .antMatchers("/protectedPath").access("hasRole('ADMIN') and #JwtUtil.validateToken(request)")
+                .anyRequest().permitAll()// Allow access to all other requests
                 .and()
                 .formLogin()
                 .loginProcessingUrl("/loginUser")

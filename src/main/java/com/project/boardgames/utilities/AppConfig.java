@@ -2,6 +2,7 @@ package com.project.boardgames.utilities;
 
 import com.project.boardgames.entities.AppUser;
 import com.project.boardgames.entities.GenericEntity;
+import com.project.boardgames.entities.Producer;
 import com.project.boardgames.entities.Product;
 import com.project.boardgames.repositories.*;
 import com.project.boardgames.services.AppUserServiceImpl;
@@ -26,6 +27,9 @@ public class AppConfig {
     @Autowired
     JwtTokenRepository jwtTokenRepository;
 
+    @Autowired
+    ProducerRepository producerRepository;
+
     @Value("${custom.password.salt}")
     private String salt;
     @Bean
@@ -35,6 +39,10 @@ public class AppConfig {
     @Bean
     public GenericServiceImpl<AppUser> userGenericService() {
         return new GenericServiceImpl<>(appUserRepository);
+    }
+    @Bean
+    public GenericServiceImpl<Producer> producerGenericService() {
+        return new GenericServiceImpl<>(producerRepository);
     }
     @Bean
     public String salt() {

@@ -18,7 +18,7 @@ public class ExceptionHandler {
     @org.springframework.web.bind.annotation.ExceptionHandler(Exception.class)
     public ResponseEntity<RequestResponse<Object>> handleGenericException(Exception ex) {
         AppException appEx = new AppException("An error occurred while processing the request.", 500, "error", true);
-        RequestResponse<Object> response = new RequestResponse<>(false, null, null, appEx);
+        RequestResponse<Object> response = new RequestResponse<>(false, null, ex.getMessage(), appEx);
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

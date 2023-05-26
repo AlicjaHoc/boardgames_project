@@ -1,41 +1,66 @@
 package com.project.boardgames.entities;
+
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "app_users")
 @DiscriminatorColumn(name = "entity_type")
 @DiscriminatorValue("app_user")
 public class AppUser extends GenericEntity {
 
+    @Override
+    public String toString() {
+        return "AppUser{" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", confirmPassword='" + confirmPassword + '\'' +
+                ", passwordUpdatedAt=" + passwordUpdatedAt +
+                ", role=" + role +
+                ", valid=" + valid +
+                ", address=" + address +
+                '}';
+    }
+
+    @NotBlank(message = "First name is required")
     @Column(name = "first_name")
     private String firstName;
 
+    @NotBlank(message = "Last name is required")
     @Column(name = "last_name")
     private String lastName;
 
-    @Email
-    @Column
+    @Email(message = "Invalid email format")
+    @NotBlank(message = "Email is required")
+    @Column(unique = true)
     private String email;
-
+    @JsonIgnore
     @NotBlank(message = "Password is required")
     @Size(min = 8, message = "Password must be at least 8 characters long")
     private String password;
 
     @Transient
+    @JsonIgnore
     private String confirmPassword;
-
+    @JsonIgnore
     @Column(name = "password_updated_at")
     private LocalDateTime passwordUpdatedAt;
 
     @Enumerated(EnumType.STRING)
     private Role role;
-
-
+    @JsonIgnore
     @Column(name = "valid", columnDefinition = "boolean default true")
     private Boolean valid;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id")
     private Address address;
 
@@ -72,6 +97,7 @@ public class AppUser extends GenericEntity {
     public void setPassword(String password) {
         this.password = password;
     }
+
     public String getConfirmPassword() {
         return confirmPassword;
     }
@@ -88,21 +114,12 @@ public class AppUser extends GenericEntity {
         this.passwordUpdatedAt = passwordUpdatedAt;
     }
 
-
     public Role getRole() {
         return role;
     }
 
     public void setRole(Role role) {
         this.role = role;
-    }
-
-    public Address getAddress() {
-        return address;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
     }
 
     public Boolean getValid() {
@@ -113,5 +130,12 @@ public class AppUser extends GenericEntity {
         this.valid = valid;
     }
 
+    public Address getAddress() {
+        return address;
+    }
 
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+    //MOJE ZAMÓWIENIA
 }

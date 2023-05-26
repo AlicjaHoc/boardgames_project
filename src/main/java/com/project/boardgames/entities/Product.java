@@ -1,36 +1,40 @@
 package com.project.boardgames.entities;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
+import java.security.Timestamp;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-
 @Entity
 @Table(name = "products")
 @DiscriminatorColumn(name = "entity_type")
 @DiscriminatorValue("product")
 public class Product extends GenericEntity {
 
-    @Column(name = "name")
     @NotBlank(message = "Name is required")
+    @Column(name = "name", length = 255)
     private String name;
 
     @Column(name = "description")
     private String description;
+    @Column(name = "synopsis")
+    private String synopsis;
 
-    @Column(name = "price")
+    public Producer getProducer() {
+        return producer;
+    }
+    @ManyToOne
+    @JoinColumn(name = "producer_id")
+    @JsonBackReference
+    private Producer producer;
+    @Column(name = "price", precision = 19, scale = 2)
     @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than 0")
     private BigDecimal price;
-
-    @ManyToMany
-    @JoinTable(
-            name = "product_tag",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id")
-    )
-    private Set<ProductTag> tags = new HashSet<>();
-
-
     public String getName() {
         return name;
     }
@@ -47,6 +51,34 @@ public class Product extends GenericEntity {
         this.description = description;
     }
 
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CartItem> cartItems = new ArrayList<>();
+
+    @Transient
+    private String producerName;
+
+    @Column(name = "photo")
+    private String photo;
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+    public String getProducerName() {
+        if (producer != null) {
+            return producer.getName();
+        }
+        return producerName;
+    }
+
+    public void setProducerName(String producerName) {
+        this.producerName = producerName;
+    }
+
+
     public BigDecimal getPrice() {
         return price;
     }
@@ -55,21 +87,9 @@ public class Product extends GenericEntity {
         this.price = price;
     }
 
-    public Set<ProductTag> getTags() {
-        return tags;
+    public void setProducer(Producer producer) {
+        this.producer = producer;
     }
 
-    public void setTags(Set<ProductTag> tags) {
-        this.tags = tags;
-    }
-
-    public void addTag(ProductTag tag) {
-        this.tags.add(tag);
-        tag.getProducts().add(this);
-    }
-
-    public void removeTag(ProductTag tag) {
-        this.tags.remove(tag);
-        tag.getProducts().remove(this);
-    }
 }
+
