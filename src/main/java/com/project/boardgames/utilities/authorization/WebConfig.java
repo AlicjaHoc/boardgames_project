@@ -3,16 +3,23 @@ package com.project.boardgames.utilities.authorization;
 import com.project.boardgames.repositories.AppUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.stream.Collectors;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
     @Autowired
     private AppUserRepository userRepository;
-
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         // First interceptor for admin role
@@ -31,4 +38,6 @@ public class WebConfig implements WebMvcConfigurer {
                 .addPathPatterns("/api/v1/finalizeOrder")
                 .addPathPatterns("/api/v1/getAllOrders");
     }
+
+
 }

@@ -3,6 +3,8 @@ package com.project.boardgames.utilities;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class FileUploadConfig {
@@ -13,4 +15,5 @@ public class FileUploadConfig {
         multipartResolver.setMaxUploadSize(10 * 1024 * 1024); // 10MB
         return multipartResolver;
     }
+
 }

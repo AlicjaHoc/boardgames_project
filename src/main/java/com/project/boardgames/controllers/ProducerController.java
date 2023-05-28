@@ -50,7 +50,7 @@ public class ProducerController {
         }
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/producer/{id}")
         public ResponseEntity<Producer> getProducerById(@PathVariable("id") Long id) {
             Optional<Producer> producer = producerService.returnEntityById(id);
             return ResponseEntity.notFound().build();

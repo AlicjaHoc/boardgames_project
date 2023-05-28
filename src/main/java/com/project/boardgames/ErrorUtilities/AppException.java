@@ -34,7 +34,7 @@ public class AppException extends RuntimeException {
 
     @Override
     public synchronized Throwable fillInStackTrace() {
-        if (showStackTrace) {
+        if (statusCode == 500 && showStackTrace) {
             return super.fillInStackTrace();
         } else {
             return null;
@@ -52,7 +52,7 @@ public class AppException extends RuntimeException {
         this.statusCode = statusCode;
         this.status = status;
         this.isOperational = isOperational;
-        this.isStackIncluded = false;
+        this.isStackIncluded = true;
     }
 
 }
