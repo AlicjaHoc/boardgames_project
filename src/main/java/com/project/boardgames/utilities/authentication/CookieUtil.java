@@ -9,14 +9,31 @@ public class CookieUtil {
         Cookie tokenCookie = new Cookie("jwtToken", token);
         tokenCookie.setPath("/");
         //DEV ONLY
-        tokenCookie.setHttpOnly(false);
+        tokenCookie.setHttpOnly(true);
+        tokenCookie.setSecure(true);
         tokenCookie.setMaxAge(86400);
-        response.addCookie(tokenCookie);
+
+        // Add SameSite=None to cookie
+        String cookieHeaderValue = tokenCookie.getName() + "=" + tokenCookie.getValue() + "; SameSite=None";
+        if(tokenCookie.getMaxAge() > 0) {
+            cookieHeaderValue += "; Max-Age=" + tokenCookie.getMaxAge();
+        }
+        if(tokenCookie.getSecure()) {
+            cookieHeaderValue += "; Secure";
+        }
+        if(tokenCookie.isHttpOnly()) {
+            cookieHeaderValue += "; HttpOnly";
+        }
+        if(tokenCookie.getPath() != null) {
+            cookieHeaderValue += "; Path=" + tokenCookie.getPath();
+        }
+        response.setHeader("Set-Cookie", cookieHeaderValue);
     }
     public static String extractToken(HttpServletRequest request, String cookieName) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
+                System.out.println("Cookie Name: " + cookie.getName());
                 if (cookie.getName().equals(cookieName)) { // Replace "jwtToken" with the name of your JWT token cookie
                     return cookie.getValue();
                 }

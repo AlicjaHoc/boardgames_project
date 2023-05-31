@@ -1,9 +1,26 @@
 package com.project.boardgames.ErrorUtilities;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 public class AppException extends RuntimeException {
+
+    @Value("${app.exception.show-stack}")
+    private static boolean showStackTrace;
+
+    private final int statusCode;
+    private final String status;
+    private final boolean isOperational;
+    private final String message;
+    private boolean isStackIncluded;
+
+    public AppException(String message, int statusCode, String status, boolean isOperational) {
+        super(message);
+        this.message = message;
+        this.statusCode = statusCode;
+        this.status = status;
+        this.isOperational = isOperational;
+        this.isStackIncluded = true;
+    }
 
     public int getStatusCode() {
         return statusCode;
@@ -29,30 +46,13 @@ public class AppException extends RuntimeException {
     public void setStackIncluded(boolean stackIncluded) {
         isStackIncluded = stackIncluded;
     }
-    @Value("${app.exception.show-stack}")
-    private boolean showStackTrace;
 
     @Override
     public synchronized Throwable fillInStackTrace() {
         if (statusCode == 500 && showStackTrace) {
             return super.fillInStackTrace();
         } else {
-            return null;
+            return this;
         }
     }
-    private final int statusCode;
-    private final String status;
-    private final boolean isOperational;
-    private final String message;
-    private boolean isStackIncluded;
-
-    public AppException(String message, int statusCode, String status, boolean isOperational) {
-        super(message);
-        this.message = message;
-        this.statusCode = statusCode;
-        this.status = status;
-        this.isOperational = isOperational;
-        this.isStackIncluded = true;
-    }
-
 }

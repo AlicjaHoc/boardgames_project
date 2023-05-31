@@ -39,16 +39,17 @@ public class CartController {
 
     @PostMapping("/toCart")
     public ResponseEntity<RequestResponse<Cart>> addItemToCart(@Valid @RequestBody JsonNode requestBody, BindingResult bindingResult, HttpServletRequest request) {
+        System.out.println(request.getAttribute("username"));
         JsonNode productIdNode = requestBody.get("productId");
         if (productIdNode == null) {
             throw new AppException("There are no products to add", HttpStatus.BAD_REQUEST.value(), "fail", true);
         }
-        AppUser user = appUserRepository.findByEmail(String.valueOf(request.getAttribute("username"))).get();
         Long productId = productIdNode.asLong();
         Optional<Product> productOptional = productRepository.findById(productId);
         if (productOptional.isEmpty()) {
             throw new AppException("There is no product under that id", HttpStatus.BAD_REQUEST.value(), "fail", true);
         }
+        AppUser user = appUserRepository.findByEmail(String.valueOf(request.getAttribute("username"))).get();
 
         Product product = productOptional.get();
 

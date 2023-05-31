@@ -21,7 +21,7 @@ public class ApiV1ControllerAdvice {
     private DataSource dataSource;
 
     @RequestMapping("/")
-    public void checkDatabaseConnectivity() {
+    public void checkDatabaseConnectivity() throws AppException {
         try {
             logger.log(Level.INFO, "Checking database connectivity");
             Connection connection = dataSource.getConnection();
@@ -29,7 +29,7 @@ public class ApiV1ControllerAdvice {
             logger.log(Level.INFO, "Database connectivity check succeeded");
         } catch (SQLException ex) {
             logger.log(Level.WARNING, "Database connectivity check failed", ex);
-            throw new AppException("Cannot connect to the database.", 500, "error", true);
+            throw new AppException("Cannot connect to the database.", 400, "error", true);
         }
     }
 }

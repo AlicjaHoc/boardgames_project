@@ -5,6 +5,8 @@ import com.project.boardgames.entities.AppUser;
 import com.project.boardgames.repositories.AppUserRepository;
 import com.project.boardgames.services.JwtTokenService;
 import com.project.boardgames.utilities.authentication.CookieUtil;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -12,12 +14,12 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
+@Order(Ordered.HIGHEST_PRECEDENCE)
 @Service
 public class AuthorizationInterceptor implements HandlerInterceptor {
     public AuthorizationInterceptor(AppUserRepository userRepository, String role) {
         this.userRepository = userRepository;
         this.role = role;
-        System.out.println(3);
     }
     AppUserRepository userRepository;
     private String role;
@@ -25,6 +27,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         System.out.println(1);
         String token = CookieUtil.extractToken(request, "jwtToken");
+        System.out.println(token);
         if(token == null) throw new AppException("You are not logged in", HttpStatus.UNAUTHORIZED.value(), "fail", true);
         // Check if the user is logged in
         JwtTokenService tokenService = new JwtTokenService();

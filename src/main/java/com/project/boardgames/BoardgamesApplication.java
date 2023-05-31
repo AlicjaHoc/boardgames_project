@@ -16,7 +16,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
 @ComponentScan("com.project.boardgames.*")
-@EnableWebMvc
 @Import({AppConfig.class, WebConfig.class,FileUploadConfig.class})
 public class BoardgamesApplication {
 
