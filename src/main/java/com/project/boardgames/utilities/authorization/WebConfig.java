@@ -38,7 +38,8 @@ public class WebConfig implements WebMvcConfigurer {
                 .addPathPatterns("/api/v1/createOrder")
                 .addPathPatterns("/api/v1/payment")
                 .addPathPatterns("/api/v1/finalizeOrder")
-                .addPathPatterns("/api/v1/getAllOrders");
+                .addPathPatterns("/api/v1/getAllOrders")
+                .addPathPatterns("/api/v1/cart");
     }
     @Bean
     public WebMvcConfigurer corsConfigurer() {

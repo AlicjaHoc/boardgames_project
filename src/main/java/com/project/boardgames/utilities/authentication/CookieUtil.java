@@ -9,8 +9,8 @@ public class CookieUtil {
         Cookie tokenCookie = new Cookie("jwtToken", token);
         tokenCookie.setPath("/");
         //DEV ONLY
-        tokenCookie.setHttpOnly(true);
-        tokenCookie.setSecure(true);
+        tokenCookie.setHttpOnly(false);
+        tokenCookie.setSecure(false);
         tokenCookie.setMaxAge(86400);
 
         // Add SameSite=None to cookie

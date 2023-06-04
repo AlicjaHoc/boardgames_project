@@ -149,6 +149,7 @@ public class CartController {
         RequestResponse<Cart> response = new RequestResponse<>(true, cart, "The product(s) were removed from the cart");
         return ResponseEntity.ok(response);
     }
+
     @DeleteMapping("/removeCart")
     public void removeCart(HttpServletRequest request) {
         AppUser user = appUserRepository.findByEmail(String.valueOf(request.getAttribute("username"))).get();
@@ -161,6 +162,20 @@ public class CartController {
         } else {
             throw new AppException("Cart not found", HttpStatus.NOT_FOUND.value(), "fail", true);
         }
+    }
+
+    @GetMapping("/cart")
+    public ResponseEntity<RequestResponse<Cart>> getUserCart(HttpServletRequest request) {
+        AppUser user = appUserRepository.findByEmail(String.valueOf(request.getAttribute("username"))).get();
+        Optional<Cart> cartOptional = cartRepository.findByUser_Id(user.getId());
+
+        if (cartOptional.isEmpty()) {
+            throw new AppException("Cart not found", HttpStatus.NOT_FOUND.value(), "fail", true);
+        }
+
+        Cart cart = cartOptional.get();
+        RequestResponse<Cart> response = new RequestResponse<>(true, cart, "User cart retrieved successfully");
+        return ResponseEntity.ok(response);
     }
 
 }
