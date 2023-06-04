@@ -91,5 +91,20 @@ public class Product extends GenericEntity {
         this.producer = producer;
     }
 
+    public Product() {
+    }
+
+    public Product(@NotBlank(message = "Name is required") String name, String description, Producer producer,
+            @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than 0") BigDecimal price,
+            String photo) {
+        this.name = name;
+        this.description = description;
+        this.producer = producer;
+        this.price = price;
+        this.photo = photo;
+    }
+
+    
+
 }
 

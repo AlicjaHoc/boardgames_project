@@ -44,4 +44,14 @@ public class Producer extends GenericEntity {
         products.remove(product);
         product.setProducer(null);
     }
+
+    public Producer(@NotBlank(message = "Name is required") String name) {
+        this.name = name;
+    }
+
+    public Producer() {
+    }
+
+    
+    
 }
